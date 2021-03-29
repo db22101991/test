@@ -1,0 +1,140 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dwolla Weather Interview Demo</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/navbar-static/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.0/examples/navbar-static/navbar-top.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <a class="navbar-brand" href="#">Dwolla Interview Demo Web App</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#"></a>
+                </li>
+            </ul>
+            <form class="form-inline mt-2 mt-md-0">
+                <a class="navbar-brand" style="text-decoration: underline;"
+                    href="https://www.linkedin.com/in/deepti-bidkar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-linkedin" viewBox="0 0 16 16">
+                        <path
+                            d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z" />
+                    </svg>
+                </a>
+            </form>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+        <div class="jumbotron">
+            <h1>Current Weather Information</h1>
+            <div class="row" style="margin-top: 30px;">
+                <div class="col-md-2 mb-3">
+                    <label for="firstName">City Name:</label>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <input type="text" class="form-control" id="cityName" placeholder="Please Enter City Name" value=""
+                        required>
+                    <div class="invalid-feedback">
+                        Valid city name is required.
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-md-2 mb-3"><button id="reload" class="btn btn-warning btn-lg btn-block"
+                            type="submit">Reload</button></div>
+                <div class="col-md-4 mb-3"><button id="submit" class="btn btn-success btn-lg btn-block"
+                            type="submit">Check Weather</button></div>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="alert alert-danger" id="error" style="display:none" role="alert">
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 30px;">
+                <div class="alert alert-success" id="result" style="display:none" role="alert">
+                    
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="https://code.jquery.com/jquery-3.2.1.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#submit").click(function (e) {
+                var name = $("#cityName").val();
+                console.log("city name: " + name);
+                console.log("window url: " + window.location.href);
+                if (name.length != 0) {
+                    $.ajax({
+                        type: "GET",
+                        url: window.location.href + "api/v1/getCityTemperature?name=" + $("#cityName").val() ,
+                        dataType: "json",
+                        success: function (result, status, xhr) {
+                            $('#result').text("Weather of " + name + " is: " + result.response);
+                            $("#error").hide();
+                            $("#result").show();
+                        },
+                        error: function (xhr, status, error) {
+                            $('#error').text("Error: " + xhr.responseJSON.response);
+                            $("#result").hide();
+                            $("#error").show();
+                        }
+                    });
+                }else{
+                    $('#error').text("Error: Please Enter city Name");
+                    $("#result").hide();
+                    $("#error").show();
+                }
+            });
+
+            $("#reload").click(function (e) {
+                $('#error').text("");
+                $('#result').text("");
+                $("#cityName").val("");
+                $("#result").hide();
+            $("#error").hide();
+            });
+        
+            
+        });
+    </script>
+</body>
+
+</html>
